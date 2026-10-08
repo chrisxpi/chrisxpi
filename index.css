@@ -87,7 +87,6 @@ a {
 }
 
 .nav-links li a:hover {
-    
     color: var(--primary-color);
 }
 
@@ -377,4 +376,3 @@ a {
     .about p, .contact p { font-size: 11px; }
     .about h2::after { width: 108px; }
 }
-
