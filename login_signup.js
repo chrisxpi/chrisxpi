@@ -43,8 +43,15 @@ document.querySelectorAll("[data-password-toggle]").forEach((button) => {
     });
 });
 
-function showPanel(panel) {
+function showPanel(panel, resetPrevious = true) {
     const isSignup = panel === "signup";
+    const panelToShow = isSignup ? signupPanel : loginPanel;
+    const panelToReset = isSignup ? loginPanel : signupPanel;
+
+    if (panelToShow.hidden && resetPrevious) {
+        resetPanelState(panelToReset);
+    }
+
     loginPanel.hidden = isSignup;
     signupPanel.hidden = !isSignup;
     history.replaceState(null, "", isSignup ? "#signup" : "#login");
@@ -52,7 +59,7 @@ function showPanel(panel) {
 }
 
 if (window.location.hash === "#signup") {
-    showPanel("signup");
+    showPanel("signup", false);
 }
 
 function setFieldError(input, message) {
@@ -65,6 +72,25 @@ function setFieldError(input, message) {
 function clearFormState(form) {
     form.querySelectorAll("input:not([type='checkbox'])").forEach((input) => {
         setFieldError(input, "");
+    });
+}
+
+function resetPanelState(panel) {
+    const form = panel.querySelector("form");
+    form.reset();
+    clearFormState(form);
+
+    form.querySelectorAll("[data-password-toggle]").forEach((button) => {
+        const input = document.getElementById(button.getAttribute("aria-controls"));
+
+        if (supportsPasswordMask) {
+            input.classList.add("password-masked");
+        } else {
+            input.type = "password";
+        }
+
+        button.setAttribute("aria-pressed", "false");
+        button.setAttribute("aria-label", "Show password");
     });
 }
 
